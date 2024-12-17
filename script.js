@@ -46,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const modelViewer = document.getElementById("model-viewer");
   const techTip = document.getElementById("tech-tip");
 
-  // Disable AR Button Initially
-  arButton.disabled = true;
-  arButton.innerText = "Loading...";
+  // Debugging Logs
+  console.log("Operating System:", operatingSystem);
+  console.log("Selected Model:", selectedModel);
 
   // Show a warning message for Desktop users
   if (operatingSystem === "Desktop") {
@@ -75,11 +75,26 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Enable Button When Model is Loaded
+    console.log("Model Viewer SRC:", modelViewer.src);
+
+    // Enable Button When Model is Loaded or Timeout (Fallback)
+    let isLoaded = false;
+
     modelViewer.addEventListener("load", () => {
+      isLoaded = true;
       arButton.disabled = false;
       arButton.innerText = "Click to Launch AR";
+      console.log("Model loaded successfully.");
     });
+
+    // Timeout Fallback after 5 seconds
+    setTimeout(() => {
+      if (!isLoaded) {
+        console.warn("Model load timeout - enabling button.");
+        arButton.disabled = false;
+        arButton.innerText = "Click to Launch AR";
+      }
+    }, 5000);
 
     // AR Button Event
     arButton.addEventListener("click", () => {
