@@ -38,7 +38,7 @@ function getMobileOperatingSystem() {
   return "Desktop";
 }
 
-// Directly Trigger AR on Button Click
+// Wait for Model Viewer to Load Before Triggering AR
 document.addEventListener("DOMContentLoaded", () => {
   const selectedModel = models[modelType];
   const operatingSystem = getMobileOperatingSystem();
@@ -46,22 +46,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const modelViewer = document.getElementById("model-viewer");
   const techTip = document.getElementById("tech-tip");
 
-  // Show a warning message for Desktop users
   if (operatingSystem === "Desktop") {
+    // Display a message for desktop users
     document.body.innerHTML = `
-      <div style="text-align: center; margin: 20px; font-family: Arial, sans-serif;">
+      <div style="text-align: center; font-family: Montserrat, sans-serif; padding: 20px; color: #333;">
         <h1>Please Open This Page on a Mobile Device</h1>
-        <p>AR experiences are only available on Android and iOS devices.</p>
+        <p>AR experiences are only supported on Android or iOS devices.</p>
       </div>
     `;
-    return; // Stop further script execution
+    return; // Stop further execution for desktop devices
   }
 
   if (selectedModel) {
     // Update Tech Tip
     if (techTip) techTip.innerText = selectedModel.tips;
 
-    // AR Button Event
+    // Add Event Listener to Load AR Model
     arButton.addEventListener("click", () => {
       if (operatingSystem === "Android") {
         modelViewer.src = selectedModel.android;
@@ -72,11 +72,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Trigger AR Button
-      const viewArButton = modelViewer.querySelector('[slot="ar-button"]');
-      if (viewArButton) {
-        viewArButton.click();
-      }
+      // Wait for Model Viewer to Load
+      modelViewer.addEventListener(
+        "load",
+        () => {
+          // Trigger the AR Button Programmatically
+          const viewArButton = modelViewer.querySelector('[slot="ar-button"]');
+          if (viewArButton) {
+            viewArButton.click();
+          } else {
+            console.error("AR button not found.");
+          }
+        },
+        { once: true } // Only trigger this event once
+      );
     });
   } else {
     console.error("Model type not found in URL parameters.");
