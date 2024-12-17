@@ -33,10 +33,9 @@ const models = {
 // Detect Device Type
 function getMobileOperatingSystem() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  if (/windows phone/i.test(userAgent)) return "Windows Phone";
   if (/android/i.test(userAgent)) return "Android";
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
-  return "unknown";
+  return "Desktop";
 }
 
 // Directly Trigger AR on Button Click
@@ -45,9 +44,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const operatingSystem = getMobileOperatingSystem();
   const arButton = document.getElementById("launch-ar");
   const modelViewer = document.getElementById("model-viewer");
+  const techTip = document.getElementById("tech-tip");
+
+  // Show a warning message for Desktop users
+  if (operatingSystem === "Desktop") {
+    document.body.innerHTML = `
+      <div style="text-align: center; margin: 20px; font-family: Arial, sans-serif;">
+        <h1>Please Open This Page on a Mobile Device</h1>
+        <p>AR experiences are only available on Android and iOS devices.</p>
+      </div>
+    `;
+    return; // Stop further script execution
+  }
 
   if (selectedModel) {
-    // Button Click: Trigger AR Experience
+    // Update Tech Tip
+    if (techTip) techTip.innerText = selectedModel.tips;
+
+    // AR Button Event
     arButton.addEventListener("click", () => {
       if (operatingSystem === "Android") {
         modelViewer.src = selectedModel.android;
@@ -58,14 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Force AR Button Click
+      // Trigger AR Button
       const viewArButton = modelViewer.querySelector('[slot="ar-button"]');
-      if (viewArButton) viewArButton.click();
+      if (viewArButton) {
+        viewArButton.click();
+      }
     });
-
-    // Update Tech Tip
-    const techTip = document.getElementById("tech-tip");
-    if (techTip) techTip.innerText = selectedModel.tips;
   } else {
     console.error("Model type not found in URL parameters.");
     alert("Error: Invalid model type.");

@@ -20,9 +20,9 @@
       }
 
       body {
-        font-family: "Montserrat", sans-serif; /* Set Montserrat as the default font */
+        font-family: "Montserrat", sans-serif;
         background: url("pride_background.png") no-repeat center center/cover;
-        color: #000; /* Text is black */
+        color: #000;
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -32,7 +32,7 @@
 
       /* See-through Card */
       .content-container {
-        background: rgba(255, 255, 255, 0.85); /* Translucent white */
+        background: rgba(255, 255, 255, 0.85);
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -48,19 +48,10 @@
         right: 10px;
       }
 
-      /* Content Text */
-      h1 {
-        font-size: 1.6rem;
-        margin-bottom: 10px;
-        text-align: center;
-        font-weight: 700;
-      }
-
       p {
         font-size: 0.9rem;
         line-height: 1.5;
         margin-bottom: 15px;
-        font-weight: 400;
       }
 
       a {
@@ -69,7 +60,6 @@
         font-weight: 600;
       }
 
-      /* Tech Tip Box */
       .tech-tip {
         background-color: #e5a4d3;
         color: #fff;
@@ -80,7 +70,6 @@
         font-weight: 600;
       }
 
-      /* AR Button */
       .btn {
         display: block;
         width: 100%;
@@ -101,15 +90,12 @@
         background-color: #d63031;
       }
 
-      /* AR Instructions */
       .ar-instructions {
         margin-top: 10px;
         font-size: 0.8rem;
         color: #555;
-        font-weight: 400;
       }
 
-      /* Model Viewer */
       model-viewer {
         display: none;
       }
@@ -147,7 +133,7 @@
       <!-- AR Button -->
       <button class="btn" id="launch-ar">Click to Launch AR</button>
 
-      <!-- View in AR Button -->
+      <!-- Model Viewer for AR -->
       <model-viewer
         id="model-viewer"
         bounds="tight"
@@ -164,30 +150,7 @@
       </model-viewer>
     </div>
 
-    <!-- JavaScript for Dynamic Tech Tip -->
-    <script>
-      // Example of dynamic tech tips
-      const techTips = [
-        "Always enable two-factor authentication for extra security.",
-        "Use a password manager to create and store strong, unique passwords.",
-        "Keep your software up-to-date to protect against vulnerabilities.",
-        "Avoid sharing sensitive data over unencrypted Wi-Fi connections.",
-      ];
-
-      // Randomise tech tips
-      function showRandomTechTip() {
-        const randomIndex = Math.floor(Math.random() * techTips.length);
-        document.getElementById("tech-tip").innerText = techTips[randomIndex];
-      }
-
-      // Show a tip on page load
-      window.onload = showRandomTechTip;
-
-      // AR Button Event
-      document.getElementById("launch-ar").addEventListener("click", () => {
-        const arButton = document.getElementById("ar-button");
-        arButton.click(); // Trigger AR button inside model-viewer
-      });
-    </script>
+    <!-- Include Script -->
+    <script src="script.js"></script>
   </body>
 </html>
