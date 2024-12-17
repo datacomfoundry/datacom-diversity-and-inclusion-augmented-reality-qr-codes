@@ -30,7 +30,7 @@ const models = {
   },
 };
 
-// Select Model Based on Device
+// Detect Device Type
 function getMobileOperatingSystem() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   if (/windows phone/i.test(userAgent)) return "Windows Phone";
@@ -39,32 +39,35 @@ function getMobileOperatingSystem() {
   return "unknown";
 }
 
-// Display Tips and Load Model
-document.onreadystatechange = () => {
-  if (document.readyState === "complete") {
-    const selectedModel = models[modelType];
-    const operatingSystem = getMobileOperatingSystem();
-    const tipsContainer = document.getElementById("tips-container");
-    const tipsText = document.getElementById("tips-text");
-    const startButton = document.getElementById("start-ar-button");
-    const modelViewer = document.getElementById("model-viewer");
+// Directly Trigger AR on Button Click
+document.addEventListener("DOMContentLoaded", () => {
+  const selectedModel = models[modelType];
+  const operatingSystem = getMobileOperatingSystem();
+  const arButton = document.getElementById("launch-ar");
+  const modelViewer = document.getElementById("model-viewer");
 
-    if (selectedModel) {
-      tipsText.innerText = selectedModel.tips;
-      startButton.addEventListener("click", () => {
-        tipsContainer.style.display = "none";
-        if (operatingSystem === "Android") {
-          modelViewer.src = selectedModel.android;
-        } else if (operatingSystem === "iOS") {
-          modelViewer.setAttribute("ios-src", selectedModel.ios);
-        } else {
-          alert("Unsupported platform");
-        }
-      });
-    } else {
-      tipsText.innerText =
-        "Model not found. Please provide a valid model type.";
-      startButton.style.display = "none";
-    }
+  if (selectedModel) {
+    // Button Click: Trigger AR Experience
+    arButton.addEventListener("click", () => {
+      if (operatingSystem === "Android") {
+        modelViewer.src = selectedModel.android;
+      } else if (operatingSystem === "iOS") {
+        modelViewer.setAttribute("ios-src", selectedModel.ios);
+      } else {
+        alert("Unsupported platform. Please use Android or iOS.");
+        return;
+      }
+
+      // Force AR Button Click
+      const viewArButton = modelViewer.querySelector('[slot="ar-button"]');
+      if (viewArButton) viewArButton.click();
+    });
+
+    // Update Tech Tip
+    const techTip = document.getElementById("tech-tip");
+    if (techTip) techTip.innerText = selectedModel.tips;
+  } else {
+    console.error("Model type not found in URL parameters.");
+    alert("Error: Invalid model type.");
   }
-};
+});

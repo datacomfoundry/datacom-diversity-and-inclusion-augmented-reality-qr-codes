@@ -1,48 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Datacom Foundry</title>
-    <meta charset="utf-8" />
-    <meta name="description" content="qr-code-augmented-reality" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link type="text/css" href="./styles.css" rel="stylesheet" />
-    <script
-      src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js"
-      defer
-    ></script>
-  </head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datacom Pride AR</title>
 
-  <body>
-    <div id="tips-container" class="tips-container">
-      <p id="tips-text"></p>
-      <button id="start-ar-button">Start AR</button>
-    </div>
+    <!-- Google Fonts - Montserrat -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <model-viewer
-      id="model-viewer"
-      bounds="tight"
-      enable-pan
-      ar
-      ar-modes="scene-viewer webxr quick-look"
-      camera-controls
-      environment-image="neutral"
-      shadow-intensity="1"
-      autoplay
-      xr-environment
-    >
-      <div class="progress-bar hide" slot="progress-bar">
-        <div class="update-bar"></div>
-      </div>
-      <button slot="ar-button" id="ar-button">View in your space.</button>
-      <div class="center-pre-prompt" id="ar-prompt">
-        <img src="ar_hand_prompt.png" />
-      </div>
-    </model-viewer>
+    <style>
+      /* General Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    <script src="script.js"></script>
+      body {
+        font-family: "Montserrat", sans-serif; /* Set Montserrat as the default font */
+        background: url("pride_background.png") no-repeat center center/cover;
+        color: #000; /* Text is black */
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* See-through Card */
+      .content-container {
+        background: rgba(255, 255, 255, 0.85); /* Translucent white */
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 350px;
+        text-align: left;
+      }
+
+      /* Pride Logo */
+      .logo {
+        width: 15em;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      /* Content Text */
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        font-weight: 400;
+      }
+
+      a {
+        color: #00b894;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      /* Tech Tip Box */
+      .tech-tip {
+        background-color: #e5a4d3;
+        color: #fff;
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      /* AR Button */
+      .btn {
+        display: block;
+        width: 100%;
+        background-color: #ff7675;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background 0.3s;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .btn:hover {
+        background-color: #d63031;
+      }
+
+      /* AR Instructions */
+      .ar-instructions {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: #555;
+        font-weight: 400;
+      }
+
+      /* Model Viewer */
+      model-viewer {
+        display: none;
+      }
+    </style>
     <script
       type="module"
       src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
     ></script>
+  </head>
+  <body>
+    <!-- Pride Logo -->
+    <img src="pride_logo.png" alt="Datacom Pride" class="logo" />
+
+    <!-- Content Container -->
+    <div class="content-container">
+      <p>
+        At Datacom, we are committed to creating safe spaces for everyone. Our
+        focus on tech safety ensures that our customers' data and privacy are
+        protected, while our dedication to diversity and inclusion fosters an
+        environment where all individuals feel valued and safe.
+        <br /><a href="https://www.datacom.com" target="_blank" rel="noopener"
+          >www.datacom.com</a
+        >
+      </p>
+
+      <!-- Dynamic Tech Tip -->
+      <div class="tech-tip" id="tech-tip">Loading tech tip...</div>
+
+      <!-- AR Instructions -->
+      <p class="ar-instructions">
+        Click the button below and hold your phone onto a smooth surface and
+        look for the Augmented Reality object to appear.
+      </p>
+
+      <!-- AR Button -->
+      <button class="btn" id="launch-ar">Click to Launch AR</button>
+
+      <!-- View in AR Button -->
+      <model-viewer
+        id="model-viewer"
+        bounds="tight"
+        enable-pan
+        ar
+        ar-modes="scene-viewer webxr quick-look"
+        camera-controls
+        environment-image="neutral"
+        shadow-intensity="1"
+        autoplay
+        xr-environment
+      >
+        <button slot="ar-button" id="ar-button">View in your space.</button>
+      </model-viewer>
+    </div>
+
+    <!-- JavaScript for Dynamic Tech Tip -->
+    <script>
+      // Example of dynamic tech tips
+      const techTips = [
+        "Always enable two-factor authentication for extra security.",
+        "Use a password manager to create and store strong, unique passwords.",
+        "Keep your software up-to-date to protect against vulnerabilities.",
+        "Avoid sharing sensitive data over unencrypted Wi-Fi connections.",
+      ];
+
+      // Randomise tech tips
+      function showRandomTechTip() {
+        const randomIndex = Math.floor(Math.random() * techTips.length);
+        document.getElementById("tech-tip").innerText = techTips[randomIndex];
+      }
+
+      // Show a tip on page load
+      window.onload = showRandomTechTip;
+
+      // AR Button Event
+      document.getElementById("launch-ar").addEventListener("click", () => {
+        const arButton = document.getElementById("ar-button");
+        arButton.click(); // Trigger AR button inside model-viewer
+      });
+    </script>
   </body>
 </html>
