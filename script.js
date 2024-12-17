@@ -46,6 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const modelViewer = document.getElementById("model-viewer");
   const techTip = document.getElementById("tech-tip");
 
+  // Disable AR Button Initially
+  arButton.disabled = true;
+  arButton.innerText = "Loading...";
+
   // Show a warning message for Desktop users
   if (operatingSystem === "Desktop") {
     document.body.innerHTML = `
@@ -61,21 +65,30 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update Tech Tip
     if (techTip) techTip.innerText = selectedModel.tips;
 
+    // Set Model Source Based on Device
+    if (operatingSystem === "Android") {
+      modelViewer.src = selectedModel.android;
+    } else if (operatingSystem === "iOS") {
+      modelViewer.setAttribute("ios-src", selectedModel.ios);
+    } else {
+      alert("Unsupported platform. Please use Android or iOS.");
+      return;
+    }
+
+    // Enable Button When Model is Loaded
+    modelViewer.addEventListener("load", () => {
+      arButton.disabled = false;
+      arButton.innerText = "Click to Launch AR";
+    });
+
     // AR Button Event
     arButton.addEventListener("click", () => {
-      if (operatingSystem === "Android") {
-        modelViewer.src = selectedModel.android;
-      } else if (operatingSystem === "iOS") {
-        modelViewer.setAttribute("ios-src", selectedModel.ios);
-      } else {
-        alert("Unsupported platform. Please use Android or iOS.");
-        return;
-      }
-
-      // Trigger AR Button
+      // Trigger AR Button in <model-viewer>
       const viewArButton = modelViewer.querySelector('[slot="ar-button"]');
       if (viewArButton) {
         viewArButton.click();
+      } else {
+        console.error("AR button not found.");
       }
     });
   } else {
